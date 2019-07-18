@@ -42,7 +42,7 @@
             <v-card-title>
               <span class="headline">Transaction Details</span>
             </v-card-title>
-            <v-card-text>Transaction Hash: {{transaction.transactionHash}}</v-card-text>
+            <v-card-text>Transaction Hash: {{transaction.hash}}</v-card-text>
             <v-card-text>Time Stamp: {{(transaction.stringTime)}}</v-card-text>
             <v-card-text>nonce: {{transaction.nonce}}
             </v-card-text>
