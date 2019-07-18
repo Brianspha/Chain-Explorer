@@ -180,6 +180,9 @@
               else {
                 This.web3.eth.getTransaction(log.transactionHash).then((transaction) => {
                   This.web3.eth.getTransactionReceipt(transaction.hash).then((receipt) => {
+                    if (This.Transactions.some(tx => tx.hash === log.transactionHash)) {
+                      return
+                    }
                     transaction.timestamp = new Date().getTime()
                     transaction.stringTime = This.countUpFromTime(transaction.timestamp)
                     transaction.contractAddress = receipt.contractAddress

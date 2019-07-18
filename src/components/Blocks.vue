@@ -146,7 +146,7 @@
                 let This = this
                 setInterval(function () {
                     This.updateTime()
-                    This.loadBlocks
+                    //This.getLatestBlock()
                 }, 1000)
             },
             getBlockData(blockNumber) {
