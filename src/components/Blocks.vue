@@ -128,7 +128,7 @@
         },
         watch: {
             Blocks: function () {
-               // this.Blocks = sort(this.Blocks).desc(transaction => transaction.timestamp);
+                // this.Blocks = sort(this.Blocks).desc(transaction => transaction.timestamp);
                 this.$forceUpdate()
             }
         },
@@ -146,7 +146,8 @@
                 let This = this
                 setInterval(function () {
                     This.updateTime()
-                    //This.getLatestBlock()
+                    This.getLatestBlock()
+
                 }, 1000)
             },
             getBlockData(blockNumber) {
@@ -242,11 +243,14 @@
                 let This = this
                 this.web3.eth.getBlock('latest').then(function (block) {
                     block.stringTime = ''
-                    This.Blocks.push(block)
-                    if (This.Blocks.length >= This.limit) {
-                        for (var i = 0; i < This.limit / 2; i++) {
-                            This.Blocks.pop()
+                    if (!This.Blocks.some((existingBlock) => block.number === existingBlock.number)) {
+                        This.Blocks.push(block)
+                        if (This.Blocks.length >= This.limit) {
+                            for (var i = 0; i < This.limit / 2; i++) {
+                                This.Blocks.pop()
+                            }
                         }
+                        This.Blocks = sort(This.Blocks).desc(transaction => transaction.timestamp);
                     }
                 })
 
