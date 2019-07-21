@@ -2,41 +2,6 @@
     <v-app id="inspire">
         <v-container align-start justify-start row fill-height>
             <v-layout>
-                <v-dialog v-model="filterDialog">
-                    <v-card v-if="filterDialog" app-data="true" id="increaseHeight">
-                        <v-card-title class="headline">Refine By</v-card-title>
-                        <v-container fluid grid-list-xl>
-                            <v-layout wrap align-center>
-                                <v-flex xs12 sm6 d-flex>
-                                </v-flex>
-                            </v-layout>
-                        </v-container>
-                        <v-card-actions>
-                            <v-spacer></v-spacer>
-                            <v-btn color="white" light @click="filterDialog = false">
-                                Filter
-                            </v-btn>
-                        </v-card-actions>
-                    </v-card>
-                </v-dialog>
-                <v-dialog v-model="filterDialog">
-                    <v-card v-if="filterDialog" app-data="true" id="increaseHeight">
-                        <v-card-title class="headline">Refine By</v-card-title>
-                        <v-container fluid grid-list-xl>
-                            <v-layout wrap align-center>
-                                <v-flex xs12 sm6 d-flex>
-
-                                </v-flex>
-                            </v-layout>
-                        </v-container>
-                        <v-card-actions>
-                            <v-spacer></v-spacer>
-                            <v-btn color="white" light @click="filterDialog = false">
-                                Filter
-                            </v-btn>
-                        </v-card-actions>
-                    </v-card>
-                </v-dialog>
                 <v-dialog v-model="dialog" width="100%" align-start justify-center row fill-height>
                     <v-card>
                         <v-card-title>
