@@ -1,7 +1,7 @@
 import Transactions from "../components/Transactions"
-import Blocks from "../components/Blocks"
 import Vue from 'vue'
 import VueRouter from "vue-router";
+import Blocks from "../components/Blocks"
 Vue.use(VueRouter)
 
 export default new VueRouter({

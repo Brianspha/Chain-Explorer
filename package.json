@@ -34,7 +34,7 @@
     "vue-snotify": "^3.2.1",
     "vue-template-compiler": "^2.6.10",
     "vuetify": "^1.5.14",
-    "web3": "^1.0.0-beta.55"
+    "web3": "^1.0.0-beta.20"
   },
   "eslintConfig": {
     "root": true,

@@ -83,7 +83,7 @@
                     </v-list-tile-title>
                     <v-list-tile-sub-title>TimeStamp: {{ (item.stringTime) }}</v-list-tile-sub-title>
                     <v-list-tile-sub-title class="text--primary"> To:
-                      {{ item.to }}
+                      {{ item.to? item.to:"Contract Creation" }}
                     </v-list-tile-sub-title>
                     <v-list-tile-sub-title class="text--primary"> From:
                       {{ item.from }}
@@ -131,10 +131,11 @@
         selecetedHash: null,
         dialog: false,
         transaction: {},
-        web3: null,
-        nodeAddress: "http://146.231.123.137:11000",
+        Web3: null,
+        nodeAddress: "http://localhost:11000",
         filterDialog: false,
-        accountsWatching: []
+        accountsWatching: [],
+        transactionHashes: []
       }
     },
     watch: {
@@ -152,7 +153,7 @@
     },
     methods: {
       init() {
-        this.web3 = new Web3(new Web3.providers.HttpProvider(this.nodeAddress));
+        this.Web3 = new Web3(new Web3.providers.HttpProvider(this.nodeAddress));
         let This = this
         setInterval(function () {
           This.updateTime()
@@ -162,34 +163,26 @@
         console.log("Index: ", index, "receipt: ", this.Transactions[index])
         return this.Transactions[index]
       },
-      loadTransactions($state) {
-        // console.log("called")
+      loadTransactions: async function ($state) {
         let This = this
-        //////console.log(this.web3);
-        This.web3.eth.getBlock('latest').then((block) => {
-          var filter = web3.eth.filter({
-            from: block.number - this.limit,
-            toBlock: 'latest'
-          });
-          console.log(filter.pollFilters)
-          setInterval(function () {
-            //console.log("here again")
-            filter.watch(function (error, log) {
-              console.log(This.Transactions.some(tx => tx.hash == log.transactionHash));
-              if (This.Transactions.some(tx => tx.hash == log.transactionHash)) return
-              else {
-                This.web3.eth.getTransaction(log.transactionHash).then((transaction) => {
-                  This.web3.eth.getTransactionReceipt(transaction.hash).then((receipt) => {
-                    if (This.Transactions.some(tx => tx.hash === log.transactionHash)) {
+        setInterval(function () {
+          This.checkTransactionCount()
+          if (This.transactionHashes.length > 0) {
+            This.transactionHashes.map((hash) => {
+              This.Web3.eth.getTransaction(hash).then((transaction) => {
+                This.Web3.eth.getTransactionReceipt(transaction.hash).then((receipt) => {
+                  console.log("Exists: ", This.Transactions.some(tx => tx.hash === hash))
+                  This.Web3.eth.getBlock(receipt.blockNumber).then((block) => {
+                    if (This.Transactions.some(tx => tx.hash === hash)) {
                       return
                     }
-                    transaction.timestamp = new Date().getTime()
+                    transaction.timestamp = block.timestamp
                     transaction.stringTime = This.countUpFromTime(transaction.timestamp)
                     transaction.contractAddress = receipt.contractAddress
                     transaction.status = receipt.status
                     transaction.cumulativeGasUsed = receipt.cumulativeGasUsed
                     transaction.logs = receipt.logs
-                    transaction.input = This.web3.utils.hexToAscii(transaction.input)
+                    transaction.input = This.Web3.utils.hexToAscii(transaction.input)
                     This.Transactions.push(transaction)
                     console.log(transaction)
                     $state.complete()
@@ -200,15 +193,32 @@
                     }
                   })
                 })
+              })
+            })
+          }
+          //  });
+        }, 1000)
+      },
+      checkTransactionCount() {
+        let This = this
+        this.Web3.eth.getBlock('latest').then((block) => {
+          for (var i = block.number - this.limit; i <= block.number; i++) {
+            this.Web3.eth.getBlock('latest').then((block) => {
+              if (block != null) {
+                if (block.transactions != null && block.transactions.length != 0) {
+                  block.transactions.map((hash) => {
+                    This.transactionHashes.push(hash)
+                  })
+                }
               }
-            });
-          }, 1000)
+            })
+          }
         })
       },
       updateTime() {
         this.Transactions.map((transaction) => {
           //console.log(transaction.timestamp)
-          countFrom = new Date(transaction.timestamp).getTime();
+          countFrom = new Date(transaction.timestamp * 1000).getTime();
           ////console.log(countFrom)
           var now = new Date(),
             countFrom = new Date(countFrom),
@@ -242,7 +252,7 @@
         })
       },
       countUpFromTime(countFrom) {
-        countFrom = new Date(countFrom).getTime();
+        countFrom = new Date(countFrom * 1000).getTime();
         var now = new Date(),
           countFrom = new Date(countFrom),
           timeDifference = (now - countFrom);

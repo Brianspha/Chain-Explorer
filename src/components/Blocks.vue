@@ -2,6 +2,41 @@
     <v-app id="inspire">
         <v-container align-start justify-start row fill-height>
             <v-layout>
+                <v-dialog v-model="filterDialog">
+                    <v-card v-if="filterDialog" app-data="true" id="increaseHeight">
+                        <v-card-title class="headline">Refine By</v-card-title>
+                        <v-container fluid grid-list-xl>
+                            <v-layout wrap align-center>
+                                <v-flex xs12 sm6 d-flex>
+                                </v-flex>
+                            </v-layout>
+                        </v-container>
+                        <v-card-actions>
+                            <v-spacer></v-spacer>
+                            <v-btn color="white" light @click="filterDialog = false">
+                                Filter
+                            </v-btn>
+                        </v-card-actions>
+                    </v-card>
+                </v-dialog>
+                <v-dialog v-model="filterDialog">
+                    <v-card v-if="filterDialog" app-data="true" id="increaseHeight">
+                        <v-card-title class="headline">Refine By</v-card-title>
+                        <v-container fluid grid-list-xl>
+                            <v-layout wrap align-center>
+                                <v-flex xs12 sm6 d-flex>
+
+                                </v-flex>
+                            </v-layout>
+                        </v-container>
+                        <v-card-actions>
+                            <v-spacer></v-spacer>
+                            <v-btn color="white" light @click="filterDialog = false">
+                                Filter
+                            </v-btn>
+                        </v-card-actions>
+                    </v-card>
+                </v-dialog>
                 <v-dialog v-model="dialog" width="100%" align-start justify-center row fill-height>
                     <v-card>
                         <v-card-title>
@@ -86,7 +121,7 @@
                 selecetedMiner: null,
                 dialog: false,
                 block: {},
-                web3: null,
+                Web3: null,
                 nodeAddress: "http://146.231.123.137:11000",
                 filterDialog: false
             }
@@ -107,7 +142,7 @@
         },
         methods: {
             init() {
-                this.web3 = new Web3(new Web3.providers.HttpProvider(this.nodeAddress));
+                this.Web3 = new Web3(new Web3.providers.HttpProvider(this.nodeAddress));
                 let This = this
                 setInterval(function () {
                     This.updateTime()
@@ -122,10 +157,10 @@
                 ////////console.log("called")
                 this.isBusy = true;
                 let This = this
-                //////console.log(this.web3);
-                this.web3.eth.getBlock('latest').then(function (block) {
+                //////console.log(this.Web3);
+                this.Web3.eth.getBlock('latest').then(function (block) {
                     for (var i = block.number, count = 0; count < This.limit; i--, count++) {
-                        This.web3.eth.getBlock(i).then(function (blockInner) {
+                        This.Web3.eth.getBlock(i).then(function (blockInner) {
                             $state.loaded()
                             if (blockInner) {
                                 console.log(blockInner)
@@ -206,7 +241,7 @@
             },
             getLatestBlock() {
                 let This = this
-                this.web3.eth.getBlock('latest').then(function (block) {
+                this.Web3.eth.getBlock('latest').then(function (block) {
                     block.stringTime = ''
                     if (!This.Blocks.some((existingBlock) => block.number === existingBlock.number)) {
                         This.Blocks.push(block)
