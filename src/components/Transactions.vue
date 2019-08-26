@@ -132,7 +132,7 @@
         dialog: false,
         transaction: {},
         Web3: null,
-        nodeAddress: "http://localhost:11000",
+        nodeAddress: "ws://localhost:12000",
         filterDialog: false,
         accountsWatching: [],
         transactionHashes: []
@@ -153,10 +153,10 @@
     },
     methods: {
       init() {
-        this.Web3 = new Web3(new Web3.providers.HttpProvider(this.nodeAddress));
+        this.Web3 = new Web3(new Web3.providers.WebsocketProvider(this.nodeAddress));
         let This = this
-        setInterval(function () {
-          This.updateTime()
+        setInterval(async function () {
+          await This.updateTime()
         }, 1000)
       },
       getTransactionReceipt(index) {
@@ -215,7 +215,7 @@
           }
         })
       },
-      updateTime() {
+      updateTime: async function () {
         this.Transactions.map((transaction) => {
           //console.log(transaction.timestamp)
           countFrom = new Date(transaction.timestamp * 1000).getTime();

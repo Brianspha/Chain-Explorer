@@ -252,7 +252,6 @@
                   setInterval(function () {
                     This.updateTimeTransaction()
                   }, 1000)
-
                 })
               })
             }

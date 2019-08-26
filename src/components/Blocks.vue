@@ -144,16 +144,16 @@
             init() {
                 this.Web3 = new Web3(new Web3.providers.HttpProvider(this.nodeAddress));
                 let This = this
-                setInterval(function () {
-                    This.updateTime()
-                    This.getLatestBlock()
+                setInterval(async function () {
+                    await This.updateTime()
+                    await This.getLatestBlock()
 
                 }, 1000)
             },
             getBlockData(blockNumber) {
                 return this.Blocks[blockNumber]
             },
-            loadBlocks($state) {
+            loadBlocks: async function ($state) {
                 ////////console.log("called")
                 this.isBusy = true;
                 let This = this
@@ -167,7 +167,7 @@
                                 block.timestamp = block.timestamp * 1000
                                 blockInner.stringTime = ''
                                 This.Blocks.push(blockInner)
-                                console.log(blockInner)
+                                //console.log(blockInner)
                                 //////console.log("adding...")
                             }
                         })
@@ -176,7 +176,7 @@
                     $state.complete()
                 })
             },
-            updateTime() {
+            updateTime: async function () {
                 this.Blocks.map((transaction) => {
                     //console.log(transaction.timestamp)
                     countFrom = new Date(transaction.timestamp * 1000).getTime();
@@ -212,34 +212,7 @@
                     return transaction
                 })
             },
-            countUpFromTime(countFrom) {
-                countFrom = new Date(countFrom).getTime();
-                var now = new Date(),
-                    countFrom = new Date(countFrom),
-                    timeDifference = (now - countFrom);
-                var secondsInADay = 60 * 60 * 1000 * 24,
-                    secondsInAHour = 60 * 60 * 1000;
-                var days = Math.floor(timeDifference / (secondsInADay) * 1);
-                var years = Math.floor(days / 365);
-                if (years > 1) {
-                    days = days - (years * 365)
-                }
-                var hours = Math.floor((timeDifference % (secondsInADay)) / (secondsInAHour) * 1);
-                var mins = Math.floor(((timeDifference % (secondsInADay)) % (secondsInAHour)) / (60 * 1000) * 1);
-                var secs = Math.floor((((timeDifference % (secondsInADay)) % (secondsInAHour)) % (60 * 1000)) / 1000 *
-                    1);
-                ////console.log("days: ", days, " hours: ", hours, " mins: ", mins, " secs: ", secs, " countFrom: ",countFrom)
-                var toreturn = ''
-                if (hours == 0 && mins == 0) {
-                    toreturn = secs + " seconds ago"
-                } else if (days == 0 && hours == 0 && mins > 0) {
-                    toreturn = mins + " minutes " + secs + " seconds ago"
-                } else {
-                    toreturn = days + " days " + hours + " hrs ago"
-                }
-                return toreturn
-            },
-            getLatestBlock() {
+            getLatestBlock: async function () {
                 let This = this
                 this.Web3.eth.getBlock('latest').then(function (block) {
                     block.stringTime = ''
