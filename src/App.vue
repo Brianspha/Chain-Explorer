@@ -207,9 +207,9 @@
         clearInterval(this.updateTime())
       },
       getBlockData() {
-        // console.log("!this.blockNumber: ", !this.blockNumber, isNaN(this.blockNumber), ": isNaN(this.blockNumber )")
-        if (!this.blockNumber || isNaN(this.blockNumber)) {
+        if (this.blockNumber || isNaN(this.blockNumber)) {
           this.snackbar = true;
+          this.error('Invalid block number')
         } else {
           let This = this
           this.Web3.eth.getBlock('latest').then((latest) => {
@@ -220,8 +220,6 @@
               This.Web3.eth.getBlock(This.blockNumber).then((block) => {
                 block.stringTime = This.countUpFromTime(block.timestamp)
                 This.block = block
-                console.log("Block: ", This.block)
-                console.log("fine")
                 This.updateTime()
 
               })
@@ -230,7 +228,7 @@
         }
       },
       getTransactionData() {
-        if (!this.transactionHash) {
+        if (this.transactionHash && !/^0x([A-Fa-f0-9]{64})$/.test(this.transactionHash)) {
           this.error("Invalid Transaction hash")
         } else {
           let This = this
@@ -248,7 +246,6 @@
                   transaction.logs = receipt.logs
                   transaction.input = This.Web3.utils.hexToAscii(transaction.input)
                   This.transaction = transaction
-                  console.log(transaction)
                   setInterval(function () {
                     This.updateTimeTransaction()
                   }, 1000)
@@ -259,7 +256,7 @@
         }
       },
       updateTime() {
-        console.log("updating: ", this.block)
+        //console.log("updating: ", this.block)
         if (!this.block) return
         countFrom = new Date(this.block.timestamp * 1000).getTime();
         ////console.log(countFrom)
@@ -290,11 +287,11 @@
           toreturn = days + " days " + hours + " hrs ago"
         }
         this.block.stringTime = toreturn
-        console.log("stringTime: ", this.block.stringTime)
+        //console.log("stringTime: ", this.block.stringTime)
         //console.log(transaction.stringTime)
       },
       updateTimeTransaction() {
-        console.log("updating: ", this.block)
+        //console.log("updating: ", this.block)
         if (!this.transaction) return
         countFrom = new Date(this.transaction.timestamp * 1000).getTime();
         ////console.log(countFrom)

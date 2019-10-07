@@ -72,8 +72,8 @@
               <v-spacer></v-spacer>
             </v-toolbar>
             <v-list two-line v-if="Transactions.length>0">
-              <template v-for="(item, index) in Transactions">
-                <v-list-tile :key="index+new Date().getTime()" avatar ripple>
+              <template v-for="(item, index) in Transactions" >
+                <v-list-tile :key="index+new Date().getTime()" avatar ripple :ripple="{ center: true }">
                   <v-list-tile-avatar>
                     <img src="../images/Tx.png">
                   </v-list-tile-avatar>
@@ -160,7 +160,7 @@
         }, 1000)
       },
       getTransactionReceipt(index) {
-        console.log("Index: ", index, "receipt: ", this.Transactions[index])
+        //console.log("Index: ", index, "receipt: ", this.Transactions[index])
         return this.Transactions[index]
       },
       loadTransactions: async function ($state) {
@@ -171,7 +171,6 @@
             This.transactionHashes.map((hash) => {
               This.Web3.eth.getTransaction(hash).then((transaction) => {
                 This.Web3.eth.getTransactionReceipt(transaction.hash).then((receipt) => {
-                  console.log("Exists: ", This.Transactions.some(tx => tx.hash === hash))
                   This.Web3.eth.getBlock(receipt.blockNumber).then((block) => {
                     if (This.Transactions.some(tx => tx.hash === hash)) {
                       return
@@ -184,7 +183,6 @@
                     transaction.logs = receipt.logs
                     transaction.input = This.Web3.utils.hexToAscii(transaction.input)
                     This.Transactions.push(transaction)
-                    console.log(transaction)
                     $state.complete()
                     if (This.Transactions.length == This.limit) {
                       for (var i = 0; i < This.limit / 2; i++) {

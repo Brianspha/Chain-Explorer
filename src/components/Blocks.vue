@@ -1,5 +1,5 @@
 <template>
-    <v-app id="inspire">
+  <v-app id="inspire">
         <v-container align-start justify-start row fill-height>
             <v-layout>
                 <v-dialog v-model="filterDialog">
@@ -65,8 +65,8 @@
                             <v-spacer></v-spacer>
                         </v-toolbar>
                         <v-list two-line v-if="Blocks.length>0">
-                            <template v-for="(item, index) in Blocks">
-                                <v-list-tile :key="index+new Date().getTime()" avatar ripple>
+                            <template v-for="(item, index) in Blocks" >
+                                <v-list-tile :key="index+new Date().getTime()" avatar  :ripple="{ center: true }">
                                     <v-list-tile-avatar>
                                         <img src="../images/BK.png">
                                     </v-list-tile-avatar>
@@ -154,21 +154,16 @@
                 return this.Blocks[blockNumber]
             },
             loadBlocks: async function ($state) {
-                ////////console.log("called")
                 this.isBusy = true;
                 let This = this
-                //////console.log(this.Web3);
                 this.Web3.eth.getBlock('latest').then(function (block) {
                     for (var i = block.number, count = 0; count < This.limit; i--, count++) {
                         This.Web3.eth.getBlock(i).then(function (blockInner) {
                             $state.loaded()
                             if (blockInner) {
-                                console.log(blockInner)
                                 block.timestamp = block.timestamp * 1000
                                 blockInner.stringTime = ''
                                 This.Blocks.push(blockInner)
-                                //console.log(blockInner)
-                                //////console.log("adding...")
                             }
                         })
                     }
