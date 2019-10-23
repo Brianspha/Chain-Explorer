@@ -194,7 +194,7 @@
           render: true
         }
       ],
-      Web3: new Web3(new Web3.providers.HttpProvider("http://146.231.123.137:11000")),
+      Web3: new Web3("ws://localhost:13000"),
     }),
     mounted() {
       AOS.init();

@@ -142,7 +142,7 @@
         },
         methods: {
             init() {
-                this.Web3 = new Web3(new Web3.providers.HttpProvider(this.nodeAddress));
+                this.Web3 = new Web3("ws://localhost:13000");
                 let This = this
                 setInterval(async function () {
                     await This.updateTime()
