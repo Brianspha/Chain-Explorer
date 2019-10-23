@@ -209,8 +209,6 @@
       getBlockData() {
         if (this.blockNumber || isNaN(this.blockNumber)) {
           this.snackbar = true;
-          this.error('Invalid block number')
-        } else {
           let This = this
           this.Web3.eth.getBlock('latest').then((latest) => {
             if (latest.number < This.blockNumber) {
@@ -220,15 +218,18 @@
               This.Web3.eth.getBlock(This.blockNumber).then((block) => {
                 block.stringTime = This.countUpFromTime(block.timestamp)
                 This.block = block
+                console.log(block)
                 This.updateTime()
-
               })
             }
           })
+        } else {
+          this.error('Invalid block number')
+
         }
       },
       getTransactionData() {
-        if (this.transactionHash && !/^0x([A-Fa-f0-9]{64})$/.test(this.transactionHash)) {
+        if (this.transactionHash !== '' && !/^0x([A-Fa-f0-9]{64})$/.test(this.transactionHash)) {
           this.error("Invalid Transaction hash")
         } else {
           let This = this
@@ -236,6 +237,7 @@
             if (transaction == undefined) {
               This.error("Invalid Transaction hash")
             } else {
+              //console.log(transaction)
               This.Web3.eth.getTransactionReceipt(transaction.hash).then((receipt) => {
                 This.Web3.eth.getBlock(receipt.blockNumber).then((block) => {
                   transaction.timestamp = block.timestamp
@@ -322,14 +324,14 @@
           toreturn = days + " days " + hours + " hrs ago"
         }
         this.transaction.stringTime = toreturn
-        console.log("stringTime: ", this.transaction.stringTime)
+        // console.log("stringTime: ", this.transaction.stringTime)
         //console.log(transaction.stringTime)
       },
       countUpFromTime(countFrom) {
         countFrom = new Date(countFrom).getTime();
-        var now = new Date(),
-          countFrom = new Date(countFrom),
-          timeDifference = (now - countFrom);
+        var now = new Date()
+        var newcountFrom = new Date(countFrom)
+        var timeDifference = (now - newcountFrom);
         var secondsInADay = 60 * 60 * 1000 * 24,
           secondsInAHour = 60 * 60 * 1000;
         var days = Math.floor(timeDifference / (secondsInADay) * 1);
