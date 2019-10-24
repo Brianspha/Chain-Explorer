@@ -221,7 +221,6 @@
                         This.Blocks = sort(This.Blocks).desc(transaction => transaction.timestamp);
                     }
                 })
-
             }
         }
     }
